@@ -27,8 +27,8 @@ class User {
 
     // save to db
     const results = await db.query(
-      `INSERT INTO users (username, password, first_name, last_name, phone, join_at) 
-      VALUES ($1, $2, $3, $4, $5, current_timestamp) 
+      `INSERT INTO users (username, password, first_name, last_name, phone, join_at, last_login_at) 
+      VALUES ($1, $2, $3, $4, $5, current_timestamp, current_timestamp) 
       RETURNING username, password, first_name, last_name, phone`,
       [username, hashedPassword, first_name, last_name, phone]);
 
@@ -61,10 +61,6 @@ class User {
       `UPDATE users 
       SET last_login_at = current_timestamp 
       WHERE username = $1`, [username]);
-
-    if (!results.rows.length[0]) {
-      throw new ExpressError(`username: ${username} doesn't exist`, 404)
-    }
   }
 
   /** All: basic info on all users:
@@ -90,7 +86,17 @@ class User {
    *          join_at,
    *          last_login_at } */
 
-  static async get(username) { }
+  static async get(username) {
+    const results = await db.query(
+      `SELECT username, first_name, last_name, phone, join_at, last_login_at 
+      FROM users
+      WHERE username = $1`, [username]);
+
+      if (!results.rows[0]) {
+        throw new ExpressError("User not found", 404)
+      }
+      return results.rows[0];
+   }
 
   /** Return messages from this user.
    *
