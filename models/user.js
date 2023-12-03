@@ -56,12 +56,30 @@ class User {
 
   /** Update last_login_at for user */
 
-  static async updateLoginTimestamp(username) { }
+  static async updateLoginTimestamp(username) { 
+    const results = await db.query(
+      `UPDATE users 
+      SET last_login_at = current_timestamp 
+      WHERE username = $1`, [username]);
+
+    if (!results.rows.length[0]) {
+      throw new ExpressError(`username: ${username} doesn't exist`, 404)
+    }
+  }
 
   /** All: basic info on all users:
    * [{username, first_name, last_name, phone}, ...] */
 
-  static async all() { }
+  static async all() {
+    const results = await db.query(
+    `SELECT username, first_name, last_name, phone 
+    FROM users`);
+
+    if (results.rows.length === 0) {
+      throw new ExpressError("No users", 404)
+    }
+    return results.rows
+   }
 
   /** Get: get user by username
    *
