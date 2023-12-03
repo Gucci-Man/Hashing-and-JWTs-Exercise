@@ -1,5 +1,12 @@
 /** User class for message.ly */
 
+const ExpressError = require("../expressError");
+const db = require("../db");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { authenticateJWT, ensureLoggedIn, ensureCorrectUser } = require("../middleware/auth");
+const { DB, SECRET_KEY, BCRYPT_WORK_FACTOR } = require("../config");
+
 
 
 /** User of the site. */
@@ -10,7 +17,23 @@ class User {
    *    {username, password, first_name, last_name, phone}
    */
 
-  static async register({username, password, first_name, last_name, phone}) { }
+  static async register({username, password, first_name, last_name, phone}) {
+    if (!username || !password) {
+      throw new ExpressError("Username and password required", 400);
+    }
+
+    // hash password
+    const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
+
+    // save to db
+    const results = await db.query(
+      `INSERT INTO users (username, password, first_name, last_name, phone, join_at) 
+      VALUES ($1, $2, $3, $4, $5, current_timestamp) 
+      RETURNING username, password, first_name, last_name, phone`,
+      [username, hashedPassword, first_name, last_name, phone]);
+
+    return results.rows[0];
+   }
 
   /** Authenticate: is this username/password valid? Returns boolean. */
 
