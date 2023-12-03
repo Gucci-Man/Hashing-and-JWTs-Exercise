@@ -21,3 +21,12 @@ CREATE TABLE messages (
     sent_at timestamp with time zone NOT NULL,
     read_at timestamp with time zone
 );
+
+/* INSERT INTO users (username, password, first_name, last_name, phone, join_at, last_login_at) 
+VALUES ('robin', 'robinpassword','Tim','Drake','111', current_timestamp, current_timestamp) 
+RETURNING username, password, first_name, last_name, phone;
+
+INSERT INTO users (username, password, first_name, last_name, phone, join_at, last_login_at) 
+VALUES ('batman', 'batmanpassword','Bruce','Wayne','999', current_timestamp, current_timestamp) 
+RETURNING username, password, first_name, last_name, phone;
+ */
