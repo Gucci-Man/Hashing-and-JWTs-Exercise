@@ -3,7 +3,6 @@
 const ExpressError = require("../expressError");
 const db = require("../db");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 const { BCRYPT_WORK_FACTOR } = require("../config");
 
 
@@ -22,7 +21,7 @@ class User {
     }
 
     // hash password
-    const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
+    let hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
 
     // save to db
     const results = await db.query(

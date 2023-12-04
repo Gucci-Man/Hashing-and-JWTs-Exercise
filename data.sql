@@ -29,4 +29,17 @@ RETURNING username, password, first_name, last_name, phone;
 INSERT INTO users (username, password, first_name, last_name, phone, join_at, last_login_at) 
 VALUES ('batman', 'batmanpassword','Bruce','Wayne','999', current_timestamp, current_timestamp) 
 RETURNING username, password, first_name, last_name, phone;
- */
+
+
+INSERT INTO messages (
+from_username, 
+to_username,
+body,
+sent_at,
+read_at)
+VALUES (
+'batman', 
+'robin',
+'Hello There',
+current_timestamp,
+current_timestamp); */
